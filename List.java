@@ -2,13 +2,11 @@ package last.free;
 
 public class List {
     private String name;
-    private int price;
-    private int priceAmount;
+    private String price;
 
-    public Address(String name, int price, int priceAmount) {
+    public List(String name, String price) {
         this.name = name;
         this.price = price;
-        this.priceAmount = priceAmount;
     }
 
     public String getName() {
@@ -18,29 +16,22 @@ public class List {
         this.name = name;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public int getPriceAmount() {
-        return priceAmount;
-    }
-    public void setPriceAmount(int priceAmount) {
-        this.priceAmount = priceAmount;
-    }
-
     public String toString() {
-        String tmp = name + "," + price + "," + priceAmount;
+        String tmp = name + "," + price;
         return tmp;
     }
 
     public static void main(String[] args) {
-        List myList = new List("卵", 200, 200);
+        List myList = new List("卵", "200");
         System.out.println(myList);
-        myList.setPrice(250);
+        myList.setPrice("250");
         System.out.println(myList);
     }
 }

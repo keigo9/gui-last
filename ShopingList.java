@@ -17,7 +17,7 @@ public class ShopingList {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] field = line.split(",");
-                add(new List(field[0], field[1], field[2]));
+                add(new List(field[0], field[1]));
             }
             reader.close();
         } catch (Exception e) {
@@ -78,13 +78,18 @@ public class ShopingList {
         return nameList;
     }
 
+    public String getPriceAmount() {
+        int sum = 0;
+        for (List list: memo) {
+            sum = sum + Integer.parseInt(list.getPrice());
+        }
+        return Integer.toString(sum);
+    }
+
     public static void main(String[] args) {
         ShopingList list = new ShopingList();
         list.open("shopinglist.txt");
-        list.showAddresses();
-        List eggList = new List("卵", 200, 200);
-        list.add(eggList);
-        list.showAddresses();
+        System.out.println(list.getPriceAmount());
     }
 
 }
