@@ -12,6 +12,7 @@ public class ShopingListGUI extends JFrame {
     JButton addButton, removeButton, updateButton, doneButton, redoButton;
     JPanel pane;
     ShopingList memo, memo2;
+    boolean memoSlected = true;
 
     public static void main(String[] args) {
         JFrame w = new ShopingListGUI("ShopingListGUI");
@@ -87,6 +88,7 @@ public class ShopingListGUI extends JFrame {
                 List selectedList = memo.findName(list.getSelectedValue().toString());
                 priceField.setText(selectedList.getPrice());
                 priceAmountField.setText(memo.getPriceAmount());
+                memoSlected = true;
             }
         }
     }
@@ -98,6 +100,7 @@ public class ShopingListGUI extends JFrame {
                 List selectedList = memo.findName2(list2.getSelectedValue().toString());
                 priceField.setText(selectedList.getPrice());
                 priceAmountField.setText(memo.getPriceAmount2());
+                 memoSlected = false;
             }
         }
     }
@@ -177,11 +180,9 @@ public class ShopingListGUI extends JFrame {
                 memo.add(addList);
                 memo.showList();
                 model.addElement(nameField.getText());
-                int sum = Integer.parseInt(priceAmountField.getText());
-                sum = sum + Integer.parseInt(priceField.getText());
                 nameField.setText("");
                 priceField.setText("");
-                priceAmountField.setText(Integer.toString(sum));
+                priceAmountField.setText(memo.getPriceAmount());
             }
         }
     }
@@ -197,14 +198,18 @@ public class ShopingListGUI extends JFrame {
             } else {
                 if (memo.findName(nameField.getText()) != null) {
                     List updateList = memo.findName(nameField.getText());
-                    int sum = Integer.parseInt(priceAmountField.getText());
-                    sum = sum - Integer.parseInt(updateList.getPrice());
-                    sum = sum + Integer.parseInt(priceField.getText());
                     memo.remove(updateList);
                     List updatedList = new List(nameField.getText(), priceField.getText());
                     memo.add(updatedList);
                     memo.showList();
-                    priceAmountField.setText(Integer.toString(sum));
+                    priceAmountField.setText(memo.getPriceAmount());
+                }
+                if (memo.findName2(nameField.getText()) != null) {
+                    List updateList = memo.findName2(nameField.getText());
+                    memo.remove2(updateList);
+                    List updatedList = new List(nameField.getText(), priceField.getText());
+                    memo.add2(updatedList);
+                    priceAmountField.setText(memo.getPriceAmount2());
                 }
             }
         }
@@ -216,20 +221,36 @@ public class ShopingListGUI extends JFrame {
             putValue(Action.SHORT_DESCRIPTION, "削除");
         }
         public void actionPerformed(ActionEvent e) {
-            int index = list.getSelectedIndex();
-            if ( index < 0 ) { return; }; 
-            String select = (String) model.get( index );
-            Object[] msg = { select, "を削除します" };
-            int ans = JOptionPane.showConfirmDialog( pane, msg, "はい・いいえ・取消し",
-                                JOptionPane.YES_NO_CANCEL_OPTION );
-            if ( ans == 0 ) {
-                nameField.setText("");
-                priceField.setText("");
-                int sum = Integer.parseInt(priceAmountField.getText());
-                sum = sum - Integer.parseInt(priceField.getText());
-                List removeList = memo.findName(list.getSelectedValue().toString());
-                memo.remove(removeList);
-                model.remove( index );
+            if (memoSlected == true) {
+                int index = list.getSelectedIndex();
+                if ( index < 0 ) { return; }; 
+                String select = (String) model.get( index );
+                Object[] msg = { select, "を削除します" };
+                int ans = JOptionPane.showConfirmDialog( pane, msg, "はい・いいえ・取消し",
+                                    JOptionPane.YES_NO_CANCEL_OPTION );
+                if ( ans == 0 ) {
+                    nameField.setText("");
+                    priceField.setText("");
+                    List removeList = memo.findName(list.getSelectedValue().toString());
+                    memo.remove(removeList);
+                    model.remove( index );
+                    priceAmountField.setText(memo.getPriceAmount());
+                }
+            } else if (memoSlected == false) {
+                int index = list2.getSelectedIndex();
+                if ( index < 0 ) { return; }; 
+                String select = (String) model2.get( index );
+                Object[] msg = { select, "を削除します" };
+                int ans = JOptionPane.showConfirmDialog( pane, msg, "はい・いいえ・取消し",
+                                    JOptionPane.YES_NO_CANCEL_OPTION );
+                if ( ans == 0 ) {
+                    nameField.setText("");
+                    priceField.setText("");
+                    List removeList = memo.findName2(list2.getSelectedValue().toString());
+                    memo.remove2(removeList);
+                    model2.remove( index );
+                    priceAmountField.setText(memo.getPriceAmount2());
+                }
             }
         }
     }
