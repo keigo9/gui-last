@@ -86,6 +86,7 @@ public class ShopingListGUI extends JFrame {
                 nameField.setText(list.getSelectedValue().toString());
                 List selectedList = memo.findName(list.getSelectedValue().toString());
                 priceField.setText(selectedList.getPrice());
+                priceAmountField.setText(memo.getPriceAmount());
             }
         }
     }
@@ -96,6 +97,7 @@ public class ShopingListGUI extends JFrame {
                 nameField.setText(list2.getSelectedValue().toString());
                 List selectedList = memo.findName2(list2.getSelectedValue().toString());
                 priceField.setText(selectedList.getPrice());
+                priceAmountField.setText(memo.getPriceAmount2());
             }
         }
     }
