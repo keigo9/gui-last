@@ -19,6 +19,11 @@ public class ShopingList {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
+                if (line.equals("未購入")) {
+                    break;
+                }
+            }
+            while ((line = reader.readLine()) != null) {
                 if (line.equals("購入済み")) {
                     break;
                 }
@@ -39,7 +44,12 @@ public class ShopingList {
         try {
             File file = new File(filename);
             PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+            writer.println("未購入");
             for (List list: memo) {
+                writer.println(list);
+            }
+            writer.println("購入済み");
+            for (List list: memo2) {
                 writer.println(list);
             }
             writer.close();

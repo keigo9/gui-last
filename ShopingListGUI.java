@@ -115,7 +115,6 @@ public class ShopingListGUI extends JFrame {
             model.clear();
             model2.clear();
             memo.open(fileName);
-            // memo2.open(fileName);
             nameField.setText("");
             priceField.setText("");
             priceAmountField.setText(memo.getPriceAmount());
