@@ -262,16 +262,14 @@ public class ShopingListGUI extends JFrame {
             int index = list2.getSelectedIndex();
             if ( index < 0 ) { return; }; 
             String select = (String) model2.get( index );
+            List redoList = memo.findName2(list2.getSelectedValue().toString());
             model.addElement(nameField.getText());
-            // nameField.setText("");
-            // priceField.setText("");
+            memo.add(redoList);
             
-            List removeList = memo.findName(list2.getSelectedValue().toString());
-            // memo.remove(removeList);
+            memo.remove2(redoList);
             model2.remove( index );
 
-            // int sum = Integer.parseInt(priceAmountField.getText());
-            // sum = sum - Integer.parseInt(priceField.getText());
+            priceAmountField.setText(memo.getPriceAmount2());
         }
     }
 }
