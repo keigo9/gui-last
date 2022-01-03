@@ -7,22 +7,23 @@ import java.awt.event.*;
 
 public class ShopingListGUI extends JFrame {
     JTextField nameField, priceField, priceAmountField;
-    DefaultListModel model;
-    JList list;
-    JButton addButton, removeButton, updateButton;
+    DefaultListModel model, model2;
+    JList list, list2;
+    JButton addButton, removeButton, updateButton, doneButton, redoButton;
     JPanel pane;
-    ShopingList memo;
+    ShopingList memo, memo2;
 
     public static void main(String[] args) {
         JFrame w = new ShopingListGUI("ShopingListGUI");
         w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        w.setSize(400, 300);
+        w.setSize(800, 400);
         w.setVisible(true);
     }
 
     public ShopingListGUI(String title) {
         super(title);
         memo = new ShopingList();
+        memo2 = new ShopingList();
         pane = (JPanel) getContentPane();
 
         JMenuBar menuBar = new JMenuBar();
@@ -43,10 +44,19 @@ public class ShopingListGUI extends JFrame {
         list.addListSelectionListener(new NameSelect());
         JScrollPane sc = new JScrollPane(list);
         sc.setBorder(new TitledBorder("買い物メモ"));
-        pane.add(sc, BorderLayout.CENTER);
+        pane.add(sc, BorderLayout.WEST);
+
+        model2 = new DefaultListModel();
+        list2 = new JList(model2);
+        list2.addListSelectionListener(new NameSelect2());
+        JScrollPane sc2 = new JScrollPane(list2);
+        sc2.setBorder(new TitledBorder("購入済み"));
+        pane.add(sc2, BorderLayout.CENTER);
 
         JPanel fields = new JPanel();
         fields.setLayout(new BoxLayout(fields, BoxLayout.Y_AXIS));
+        pane.add(fields, BorderLayout.EAST);
+        
         nameField = new JTextField(20);
         nameField.setBorder(new TitledBorder("名前"));
         fields.add(nameField);
@@ -64,8 +74,10 @@ public class ShopingListGUI extends JFrame {
         fields.add(updateButton);
         removeButton = new JButton(new RemoveAction());
         fields.add(removeButton);
-
-        pane.add(fields, BorderLayout.EAST);
+        doneButton = new JButton(new DoneAction());
+        fields.add(doneButton);
+        redoButton = new JButton(new RedoAction());
+        fields.add(redoButton);
     }
 
     class NameSelect implements ListSelectionListener {
@@ -74,7 +86,16 @@ public class ShopingListGUI extends JFrame {
                 nameField.setText(list.getSelectedValue().toString());
                 List selectedList = memo.findName(list.getSelectedValue().toString());
                 priceField.setText(selectedList.getPrice());
-                // priceAmountField.setText(selectedList.getPriceAmount());
+            }
+        }
+    }
+
+    class NameSelect2 implements ListSelectionListener {
+        public void valueChanged(ListSelectionEvent e) {
+            if (list2.getSelectedValue() != null) {
+                nameField.setText(list2.getSelectedValue().toString());
+                List selectedList = memo.findName2(list2.getSelectedValue().toString());
+                priceField.setText(selectedList.getPrice());
             }
         }
     }
@@ -92,12 +113,17 @@ public class ShopingListGUI extends JFrame {
             if( ret != JFileChooser.APPROVE_OPTION ) return; // 選ばれていなければ
             String fileName = fileChooser.getSelectedFile().getAbsolutePath(); // 選ばれていればそのファイルのパスを得る
             model.clear();
+            model2.clear();
             memo.open(fileName);
+            // memo2.open(fileName);
             nameField.setText("");
             priceField.setText("");
             priceAmountField.setText(memo.getPriceAmount());
             for (String name: memo.getNames()) {
                 model.addElement(name);
+            }
+            for (String name: memo.getNames2()) {
+                model2.addElement(name);
             }
         }
     }
@@ -138,7 +164,7 @@ public class ShopingListGUI extends JFrame {
             putValue(Action.SHORT_DESCRIPTION, "追加");
         }
         public void actionPerformed(ActionEvent e) {
-            if ("".equals(nameField.getText()) || "".equals(priceField.getText()) || "".equals(priceAmountField.getText())) {
+            if ("".equals(nameField.getText()) || "".equals(priceField.getText())) {
                 return;
             } else {
                 for(int i=0; i<model.getSize(); i++) {
@@ -204,6 +230,50 @@ public class ShopingListGUI extends JFrame {
                 memo.remove(removeList);
                 model.remove( index );
             }
+        }
+    }
+
+    class DoneAction extends AbstractAction {
+        DoneAction() {
+            putValue(Action.NAME, "完了");
+            putValue(Action.SHORT_DESCRIPTION, "完了");
+        }
+        public void actionPerformed(ActionEvent e) {
+            int index = list.getSelectedIndex();
+            if ( index < 0 ) { return; }; 
+            String select = (String) model.get( index );
+            List removeList = memo.findName(list.getSelectedValue().toString());
+            model2.addElement(nameField.getText());
+            // nameField.setText("");
+            // priceField.setText("");
+            
+            // memo.remove(removeList);
+            model.remove( index );
+
+            // int sum = Integer.parseInt(priceAmountField.getText());
+            // sum = sum - Integer.parseInt(priceField.getText());
+        }
+    }
+
+    class RedoAction extends AbstractAction {
+        RedoAction() {
+            putValue(Action.NAME, "戻す");
+            putValue(Action.SHORT_DESCRIPTION, "戻す");
+        }
+        public void actionPerformed(ActionEvent e) {
+            int index = list2.getSelectedIndex();
+            if ( index < 0 ) { return; }; 
+            String select = (String) model2.get( index );
+            model.addElement(nameField.getText());
+            // nameField.setText("");
+            // priceField.setText("");
+            
+            List removeList = memo.findName(list2.getSelectedValue().toString());
+            // memo.remove(removeList);
+            model2.remove( index );
+
+            // int sum = Integer.parseInt(priceAmountField.getText());
+            // sum = sum - Integer.parseInt(priceField.getText());
         }
     }
 }
